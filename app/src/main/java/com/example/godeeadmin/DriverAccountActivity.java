@@ -8,10 +8,18 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DriverAccountActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
+    FirebaseFirestore db;
+    private ProfileAdapter adapter;
+    private List<UserModel> profileList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,9 +31,25 @@ public class DriverAccountActivity extends AppCompatActivity {
         navigationView.setSelectedItemId(R.id.activity_driver);
         pageNavigation(navigationView);
 
+        db = FirebaseFirestore.getInstance();
 
         recyclerView = findViewById(R.id.driverRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        db.collection("drivers").get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                profileList = new ArrayList<>();
+                for (DocumentSnapshot document : task.getResult()) {
+                    if (document != null) {
+                        UserModel userModel = document.toObject(UserModel.class);
+                        profileList.add(userModel);
+
+                    }
+                }
+                adapter = new ProfileAdapter(profileList);
+                recyclerView.setAdapter(adapter);
+            }
+        });
     }
 
 

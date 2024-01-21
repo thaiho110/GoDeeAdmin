@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -21,6 +22,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class UserAccountActivity extends AppCompatActivity {
 
@@ -44,21 +46,15 @@ public class UserAccountActivity extends AppCompatActivity {
         pageNavigation(navigationView);
 
 
-        adapter = new ProfileAdapter(profileList);
-        recyclerView.setAdapter(adapter);
         db.collection("users").get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 profileList = new ArrayList<>();
-                for (QueryDocumentSnapshot document : task.getResult()) {
-                    String name = (String) document.get("name");
-                    String email = (String) document.get("name");
-                    String phone = (String) document.get("name");
-                    int age = (int) document.get("name");
-                    String nationality = (String) document.get("name");
-                    userAddress userAddress = (com.example.godeeadmin.userAddress) document.get("address");
-                    int type = (int) document.get("name");
-                    UserModel userModel = new UserModel(name, email, phone, age, nationality, userAddress, 100);
-                    profileList.add(userModel);
+                for (DocumentSnapshot document : task.getResult()) {
+                    if (document != null) {
+                        UserModel userModel = document.toObject(UserModel.class);
+                        profileList.add(userModel);
+
+                    }
                 }
                 adapter = new ProfileAdapter(profileList);
                 recyclerView.setAdapter(adapter);
@@ -93,29 +89,6 @@ public class UserAccountActivity extends AppCompatActivity {
         });
     }
 
-    private void fetchSessionsFromFirebase() {
-        db = FirebaseFirestore.getInstance();
-        db.collection("users").get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                profileList = new ArrayList<>();
-                for (QueryDocumentSnapshot document : task.getResult()) {
-                    String name = (String) document.get("name");
-                    String email = (String) document.get("name");
-                    String phone = (String) document.get("name");
-                    int age = (int) document.get("name");
-                    String nationality = (String) document.get("name");
-                    userAddress userAddress = (com.example.godeeadmin.userAddress) document.get("address");
-                    int type = (int) document.get("name");
-                    UserModel userModel = new UserModel(name, email,phone,age,nationality,userAddress,100);
-                    profileList.add(userModel);
-                }
-                adapter = new ProfileAdapter(profileList);
-                recyclerView.setAdapter(adapter);
-            } else {
-                // Handle errors
-            }
-        });
-    }
 
 
 }

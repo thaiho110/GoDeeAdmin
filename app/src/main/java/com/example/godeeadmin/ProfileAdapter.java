@@ -48,7 +48,7 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
         UserModel userModel = profileList.get(position);
         holder.UserID.setText(userModel.getName());
         holder.phoneNumber.setText(userModel.getPhoneNumber());
-        holder.userAge.setText(userModel.getAge());
+        holder.userAge.setText(userModel.getEmail());
     }
 
     @Override
