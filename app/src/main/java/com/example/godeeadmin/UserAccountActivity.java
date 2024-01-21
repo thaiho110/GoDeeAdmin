@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -45,10 +46,25 @@ public class UserAccountActivity extends AppCompatActivity {
 
         adapter = new ProfileAdapter(profileList);
         recyclerView.setAdapter(adapter);
-
-        fetchSessionsFromFirebase();
+        db.collection("users").get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                profileList = new ArrayList<>();
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    String name = (String) document.get("name");
+                    String email = (String) document.get("name");
+                    String phone = (String) document.get("name");
+                    int age = (int) document.get("name");
+                    String nationality = (String) document.get("name");
+                    userAddress userAddress = (com.example.godeeadmin.userAddress) document.get("address");
+                    int type = (int) document.get("name");
+                    UserModel userModel = new UserModel(name, email, phone, age, nationality, userAddress, 100);
+                    profileList.add(userModel);
+                }
+                adapter = new ProfileAdapter(profileList);
+                recyclerView.setAdapter(adapter);
+            }
+        });
     }
-
     public void pageNavigation(BottomNavigationView driverPageMenu) {
         driverPageMenu.setOnItemSelectedListener(item ->
         {   int itemId = item.getItemId();
@@ -78,23 +94,28 @@ public class UserAccountActivity extends AppCompatActivity {
     }
 
     private void fetchSessionsFromFirebase() {
+        db = FirebaseFirestore.getInstance();
         db.collection("users").get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 profileList = new ArrayList<>();
                 for (QueryDocumentSnapshot document : task.getResult()) {
-                    UserModel userModel = document.toObject(UserModel.class);
+                    String name = (String) document.get("name");
+                    String email = (String) document.get("name");
+                    String phone = (String) document.get("name");
+                    int age = (int) document.get("name");
+                    String nationality = (String) document.get("name");
+                    userAddress userAddress = (com.example.godeeadmin.userAddress) document.get("address");
+                    int type = (int) document.get("name");
+                    UserModel userModel = new UserModel(name, email,phone,age,nationality,userAddress,100);
                     profileList.add(userModel);
-                    updateRecyclerView();
                 }
-
+                adapter = new ProfileAdapter(profileList);
+                recyclerView.setAdapter(adapter);
             } else {
                 // Handle errors
             }
         });
     }
 
-    private void updateRecyclerView() {
-        adapter = new ProfileAdapter(profileList);
-        recyclerView.setAdapter(adapter);
-    }
+
 }

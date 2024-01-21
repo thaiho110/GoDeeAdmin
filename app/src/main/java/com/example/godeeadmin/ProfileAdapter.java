@@ -21,8 +21,8 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
     private final List<UserModel> profileList;
 
 
-    public ProfileAdapter( List<UserModel> profileList) {
-        this.profileList = profileList;
+    public ProfileAdapter( List<UserModel> userModelList) {
+        this.profileList = userModelList;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -38,13 +38,13 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder( ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.user_layout, parent, false);
         return new ViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ProfileAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         UserModel userModel = profileList.get(position);
         holder.UserID.setText(userModel.getName());
         holder.phoneNumber.setText(userModel.getPhoneNumber());
